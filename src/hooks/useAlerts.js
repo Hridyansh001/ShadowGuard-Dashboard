@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 
-const BASE_URL = 'http://localhost:8080'
+// const BASE_URL = 'http://localhost:8080'
+const BASE_URL ="https://shadowguard-backend-final.onrender.com";
 const POLL_INTERVAL = 5000 
 
 export function useAlerts(token, onUnauthorized) {

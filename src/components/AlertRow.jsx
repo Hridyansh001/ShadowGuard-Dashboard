@@ -52,7 +52,7 @@ function AlertModal({ alert, onClose }) {
         position:'fixed', inset:0, zIndex:1000,
         background:'rgba(0,0,0,0.72)', backdropFilter:'blur(5px)',
         display:'flex', alignItems:'center', justifyContent:'center',
-        padding:'24px', animation:'fadeIn 0.15s ease',
+        padding:'12px', animation:'fadeIn 0.15s ease',
       }}
     >
       <div
@@ -62,7 +62,7 @@ function AlertModal({ alert, onClose }) {
           border:'1px solid var(--border2)',
           borderTop:`3px solid ${cfg.accent}`,
           borderRadius:'14px',
-          width:'100%', maxWidth:'600px', maxHeight:'82vh',
+          width:'calc(100vw - 24px)', maxWidth:'600px', maxHeight:'90vh',
           display:'flex', flexDirection:'column',
           boxShadow:'0 32px 80px rgba(0,0,0,0.7)',
           animation:'fadeIn 0.18s ease',

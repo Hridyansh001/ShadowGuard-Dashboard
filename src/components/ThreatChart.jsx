@@ -2,8 +2,6 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 
 const COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#22c55e', '#a855f7', '#06b6d4', '#f97316']
 
-
-
 export default function ThreatChart({ alerts }) {
   const registry = {}
   alerts.forEach((item) => {
@@ -21,12 +19,18 @@ export default function ThreatChart({ alerts }) {
 
   return (
     <div style={styles.card}>
+      <style>{`
+        @media (max-width: 768px) {
+          .sg-chart-wrap { height: 250px !important; min-height: 250px !important; }
+        }
+      `}</style>
+
       <div style={styles.header}>
         <span style={styles.title}>Threat Distribution</span>
         <span style={styles.count}>{chartData.length} categories</span>
       </div>
 
-      <div style={styles.chartWrap}>
+      <div className="sg-chart-wrap" style={styles.chartWrap}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -88,11 +92,9 @@ const styles = {
     border: '1px solid var(--border)',
     borderRadius: '14px',
     padding: '22px',
-    height: '100%',
+    height: 'auto',
     display: 'flex',
     flexDirection: 'column',
-    position: 'sticky',
-    top: '80px',
   },
   header: {
     display: 'flex',
@@ -117,7 +119,8 @@ const styles = {
     border: '1px solid var(--border)',
   },
   chartWrap: {
-    height: '220px',
+    height: '200px',
+    minHeight: '200px',
     position: 'relative',
     flexShrink: 0,
   },
@@ -158,8 +161,6 @@ const styles = {
     flexDirection: 'column',
     gap: '10px',
     overflowY: 'auto',
-    flex: 1,
-    minHeight: 0,
   },
   legendRow: {
     display: 'flex',

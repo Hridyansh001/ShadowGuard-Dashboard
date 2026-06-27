@@ -18,10 +18,10 @@ export default function ThreatChart({ alerts }) {
     : [{ name: 'No incident logs', value: 1 }]
 
   return (
-    <div style={styles.card}>
+    <div style={{ ...styles.card, minHeight: '400px' }}>
       <style>{`
         @media (max-width: 768px) {
-          .sg-chart-wrap { height: 250px !important; min-height: 250px !important; }
+          .sg-chart-wrap { height: 220px !important; min-height: 220px !important; }
         }
       `}</style>
 
@@ -30,7 +30,7 @@ export default function ThreatChart({ alerts }) {
         <span style={styles.count}>{chartData.length} categories</span>
       </div>
 
-      <div className="sg-chart-wrap" style={styles.chartWrap}>
+      <div className="sg-chart-wrap" style={{ ...styles.chartWrap, height: '220px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -55,14 +55,12 @@ export default function ThreatChart({ alerts }) {
           </PieChart>
         </ResponsiveContainer>
 
-        {/* Center label */}
         <div style={styles.centerLabel}>
           <div style={styles.centerValue}>{alerts.length}</div>
           <div style={styles.centerText}>total</div>
         </div>
       </div>
 
-      {/* Legend */}
       <div style={styles.legend}>
         {fallbackData.map((entry, i) => {
           const pct = alerts.length > 0
@@ -119,8 +117,8 @@ const styles = {
     border: '1px solid var(--border)',
   },
   chartWrap: {
-    height: '200px',
-    minHeight: '200px',
+    height: '220px',
+    minHeight: '220px',
     position: 'relative',
     flexShrink: 0,
   },

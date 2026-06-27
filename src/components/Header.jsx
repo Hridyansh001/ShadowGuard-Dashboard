@@ -14,6 +14,11 @@ export default function Header({ syncTime, onRefresh, onLogout, loading, newCoun
           </span>
           <span style={styles.consoleBadge}>ADMIN</span>
         </div>
+        <style>{`
+        @media (min-width: 769px) {
+        .sg-sync { display: block !important; }
+        }
+        `}</style>
 
         {/* Right controls */}
         <div style={styles.controls}>
@@ -26,7 +31,7 @@ export default function Header({ syncTime, onRefresh, onLogout, loading, newCoun
               +{newCount} new
             </div>
           )}
-          <span style={styles.syncText}>{syncTime !== '–' ? `Synced ${syncTime}` : 'Awaiting sync…'}</span>
+          <span className="sg-sync" style={styles.syncText}>{syncTime !== '–' ? `Synced ${syncTime}` : 'Awaiting sync…'}</span>
           <button style={styles.btn} onClick={onRefresh} title="Refresh now">
             <RefreshCw size={12} style={{ animation: loading ? 'spin 0.7s linear infinite' : 'none' }} />
             <span>Refresh</span>
@@ -54,7 +59,10 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '14px 24px',
+    // padding: '14px 24px',
+    padding: '12px 16px',
+    flexWrap: 'wrap',
+    gap: '8px',
     maxWidth: '1200px',
     margin: '0 auto',
   },
@@ -125,6 +133,7 @@ const styles = {
     animation: 'fadeIn 0.3s ease',
   },
   syncText: {
+    display:'none',
     fontFamily: 'var(--mono)',
     fontSize: '11px',
     color: 'var(--muted)',

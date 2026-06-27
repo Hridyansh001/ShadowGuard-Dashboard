@@ -56,7 +56,7 @@ const styles = {
     justifyContent: 'center',
   },
   value: {
-    fontSize: '34px',
+    fontSize: 'clamp(20px, 4vw, 34px)',
     fontWeight: '800',
     lineHeight: 1,
   },

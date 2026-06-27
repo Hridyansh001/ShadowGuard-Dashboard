@@ -40,12 +40,19 @@ function handleLogin(newToken) {
   return (
     <div style={styles.root}>
       <Header
-        syncTime={syncTime}
-        onRefresh={fetchData}
-        onLogout={logout}
-        loading={loading}
-        newCount={newCount}
-      />
+  syncTime={syncTime}
+  onRefresh={fetchData}
+  onLogout={logout}
+  loading={loading}
+  newCount={newCount}
+/>
+<style>{`
+  @media (max-width: 768px) {
+    .sg-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .sg-main  { grid-template-columns: 1fr !important; }
+  }
+`}</style>
+      
 
       <div style={styles.wrap}>
         {/* Error banner */}
@@ -57,7 +64,7 @@ function handleLogin(newToken) {
         )}
 
         {/* Stats row */}
-        <div style={styles.statsGrid}>
+        <div className="sg-stats" style={styles.statsGrid}>
           <StatsCard title="Total Scans"  value={stats.total}   variant="total"   icon={Scan} />
           <StatsCard title="Blocked"      value={stats.blocked} variant="blocked" icon={Ban} />
           <StatsCard title="Warnings"     value={stats.warning} variant="warning" icon={AlertTriangle} />
@@ -65,7 +72,7 @@ function handleLogin(newToken) {
         </div>
 
         {/* Main layout: chart + feed */}
-        <div style={styles.mainGrid}>
+        <div className="sg-main" style={styles.mainGrid}>
           {/* Left: threat chart — sticky */}
           <div style={styles.chartCol}>
             <ThreatChart alerts={alerts} />
@@ -90,7 +97,8 @@ const styles = {
   wrap: {
     maxWidth: '1200px',
     margin: '0 auto',
-    padding: '24px 24px 48px',
+    // padding: '24px 24px 48px',
+    padding: '16px 16px 48px',
   },
   errorBanner: {
     display: 'flex',

@@ -4,9 +4,9 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 const COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#22c55e', '#a855f7', '#06b6d4', '#f97316']
 
 function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900)
   useEffect(() => {
-    const handler = () => setIsMobile(window.innerWidth <= 768)
+    const handler = () => setIsMobile(window.innerWidth <= 900)
     window.addEventListener('resize', handler)
     return () => window.removeEventListener('resize', handler)
   }, [])

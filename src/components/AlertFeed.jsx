@@ -12,6 +12,22 @@ const FILTER_COLORS = {
   SAFE: 'var(--safe)',
 }
 
+function isSameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+}
+
+function getDateLabel(dateStr) {
+  const date = new Date(dateStr)
+  const today = new Date()
+  const yesterday = new Date()
+  yesterday.setDate(today.getDate() - 1)
+  if (isSameDay(date, today)) return 'Today'
+  if (isSameDay(date, yesterday)) return 'Yesterday'
+  return date.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })
+}
+
 export default function AlertFeed({ alerts }) {
   const [filter, setFilter] = useState('ALL')
   const [search, setSearch] = useState('')
@@ -26,21 +42,25 @@ export default function AlertFeed({ alerts }) {
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
   const visible = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
-  function handleFilter(f) {
-    setFilter(f)
-    setCurrentPage(1)
-  }
+  // Group by date for separators
+  const grouped = []
+  let lastLabel = null
+  visible.forEach((alert, i) => {
+    const label = getDateLabel(alert.timestamp)
+    if (label !== lastLabel) {
+      grouped.push({ type: 'separator', label })
+      lastLabel = label
+    }
+    grouped.push({ type: 'alert', alert, index: i })
+  })
 
-  function handleSearch(val) {
-    setSearch(val)
-    setCurrentPage(1)
-  }
+  function handleFilter(f) { setFilter(f); setCurrentPage(1) }
+  function handleSearch(val) { setSearch(val); setCurrentPage(1) }
 
   return (
     <div>
       {/* Toolbar */}
       <div style={styles.toolbar}>
-        {/* Filter tabs */}
         <div style={styles.filterGroup}>
           {FILTERS.map((f) => (
             <button
@@ -56,7 +76,6 @@ export default function AlertFeed({ alerts }) {
           ))}
         </div>
 
-        {/* Search */}
         <div style={styles.searchWrap}>
           <Search size={13} color="var(--muted)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
           <input
@@ -73,13 +92,10 @@ export default function AlertFeed({ alerts }) {
           )}
         </div>
 
-        {/* Count */}
-        <span style={styles.count}>
-          {filtered.length.toLocaleString()} result{filtered.length !== 1 ? 's' : ''}
-        </span>
+        <span style={styles.count}>{filtered.length.toLocaleString()} result{filtered.length !== 1 ? 's' : ''}</span>
       </div>
 
-      {/* Alert list */}
+      {/* Alert list with date separators */}
       <div style={styles.list}>
         {visible.length === 0 ? (
           <div style={styles.empty}>
@@ -89,7 +105,17 @@ export default function AlertFeed({ alerts }) {
             </div>
           </div>
         ) : (
-          visible.map((a, i) => <AlertRow key={a.id || i} alert={a} />)
+          grouped.map((item, i) =>
+            item.type === 'separator' ? (
+              <div key={`sep-${i}`} style={styles.dateSeparator}>
+                <div style={styles.dateLine} />
+                <span style={styles.dateLabel}>{item.label}</span>
+                <div style={styles.dateLine} />
+              </div>
+            ) : (
+              <AlertRow key={item.alert.id || item.index} alert={item.alert} isNew={item.index === 0 && currentPage === 1} />
+            )
+          )
         )}
       </div>
 
@@ -100,9 +126,7 @@ export default function AlertFeed({ alerts }) {
             style={{ ...styles.pageBtn, opacity: currentPage === 1 ? 0.3 : 1 }}
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-          >
-            ←
-          </button>
+          >←</button>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1)
             .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
@@ -119,9 +143,7 @@ export default function AlertFeed({ alerts }) {
                   key={p}
                   style={{ ...styles.pageBtn, ...(p === currentPage ? styles.pageBtnActive : {}) }}
                   onClick={() => setCurrentPage(p)}
-                >
-                  {p}
-                </button>
+                >{p}</button>
               )
             )}
 
@@ -129,9 +151,7 @@ export default function AlertFeed({ alerts }) {
             style={{ ...styles.pageBtn, opacity: currentPage === totalPages ? 0.3 : 1 }}
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-          >
-            →
-          </button>
+          >→</button>
         </div>
       )}
     </div>
@@ -227,6 +247,25 @@ const styles = {
     fontFamily: 'var(--mono)',
     fontSize: '11px',
     color: 'var(--muted)',
+  },
+  dateSeparator: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '4px 0',
+  },
+  dateLine: {
+    flex: 1,
+    height: '1px',
+    background: 'var(--border)',
+  },
+  dateLabel: {
+    fontFamily: 'var(--mono)',
+    fontSize: '10px',
+    color: 'var(--muted)',
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    flexShrink: 0,
   },
   pagination: {
     display: 'flex',

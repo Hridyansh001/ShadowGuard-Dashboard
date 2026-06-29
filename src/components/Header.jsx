@@ -1,6 +1,9 @@
 import { Shield, RefreshCw, LogOut } from 'lucide-react'
 
 export default function Header({ syncTime, onRefresh, onLogout, loading, newCount = 0 }) {
+  const now = new Date()
+  const dayStr = now.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
+
   return (
     <header style={styles.header}>
       <div style={styles.inner}>
@@ -14,11 +17,6 @@ export default function Header({ syncTime, onRefresh, onLogout, loading, newCoun
           </span>
           <span style={styles.consoleBadge}>ADMIN</span>
         </div>
-        <style>{`
-        @media (min-width: 769px) {
-        .sg-sync { display: block !important; }
-        }
-        `}</style>
 
         {/* Right controls */}
         <div style={styles.controls}>
@@ -26,22 +24,40 @@ export default function Header({ syncTime, onRefresh, onLogout, loading, newCoun
             <span style={styles.liveDot} />
             <span style={styles.liveLabel}>LIVE</span>
           </div>
+
           {newCount > 0 && (
-            <div style={styles.newBadge}>
-              +{newCount} new
-            </div>
+            <div style={styles.newBadge}>+{newCount} new</div>
           )}
-          <span className="sg-sync" style={styles.syncText}>{syncTime !== '–' ? `Synced ${syncTime}` : 'Awaiting sync…'}</span>
+
+          <div style={styles.timeBlock}>
+            <span style={styles.syncText}>
+              {syncTime !== '–' ? `Synced ${syncTime}` : 'Awaiting sync…'}
+            </span>
+            <span style={styles.dayText}>{dayStr}</span>
+          </div>
+
           <button style={styles.btn} onClick={onRefresh} title="Refresh now">
             <RefreshCw size={12} style={{ animation: loading ? 'spin 0.7s linear infinite' : 'none' }} />
             <span>Refresh</span>
           </button>
-          <button style={{ ...styles.btn, ...styles.btnDanger }} onClick={onLogout} title="Sign out">
+          <button
+            style={styles.btn}
+            onClick={onLogout}
+            title="Sign out"
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--blocked)'; e.currentTarget.style.color = 'var(--blocked)' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border2)'; e.currentTarget.style.color = 'var(--text)' }}
+          >
             <LogOut size={12} />
             <span>Logout</span>
           </button>
         </div>
       </div>
+
+      <style>{`
+        @media (min-width: 769px) {
+          .sg-sync { display: flex !important; }
+        }
+      `}</style>
     </header>
   )
 }
@@ -49,7 +65,7 @@ export default function Header({ syncTime, onRefresh, onLogout, loading, newCoun
 const styles = {
   header: {
     borderBottom: '1px solid var(--border)',
-    background: 'rgba(8,11,15,0.92)',
+    background: 'rgba(8,11,15,0.95)',
     backdropFilter: 'blur(12px)',
     position: 'sticky',
     top: 0,
@@ -59,12 +75,11 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // padding: '14px 24px',
-    padding: '12px 16px',
-    flexWrap: 'wrap',
-    gap: '8px',
+    padding: '12px 24px',
     maxWidth: '1200px',
     margin: '0 auto',
+    flexWrap: 'wrap',
+    gap: '8px',
   },
   brand: {
     display: 'flex',
@@ -99,7 +114,8 @@ const styles = {
   controls: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    gap: '10px',
+    flexWrap: 'wrap',
   },
   liveRow: {
     display: 'flex',
@@ -132,11 +148,23 @@ const styles = {
     letterSpacing: '0.05em',
     animation: 'fadeIn 0.3s ease',
   },
+  timeBlock: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
   syncText: {
-    display:'none',
     fontFamily: 'var(--mono)',
     fontSize: '11px',
     color: 'var(--muted)',
+    lineHeight: 1.2,
+  },
+  dayText: {
+    fontFamily: 'var(--mono)',
+    fontSize: '9px',
+    color: 'var(--border2)',
+    letterSpacing: '0.06em',
+    lineHeight: 1.2,
   },
   btn: {
     display: 'flex',
@@ -151,9 +179,5 @@ const styles = {
     fontSize: '11px',
     cursor: 'pointer',
     transition: 'border-color 0.15s, color 0.15s',
-  },
-  btnDanger: {
-    // hover handled inline in JSX would need state; using CSS class is fine
-    // For simplicity we leave it as-is — the CSS in index.css handles .btn.danger
   },
 }
